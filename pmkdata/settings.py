@@ -93,7 +93,7 @@ env = environ.Env(
     TIME_ZONE=(str, 'UTC'),
     # DATABASE_URL
 )
-environ.Env.read_env()
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')

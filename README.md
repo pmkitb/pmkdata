@@ -9,7 +9,7 @@ Prerequisites: Python and Pipenv installed
 1. Clone this repository to your local machine
 2. `cd <repo_directory>`
 3. Copy `.env.example` to `.env`, then edit its contents as needed to adjust Django settings
-4. `pipenv install` to install dependencies
+4. `pipenv install --dev` to install dependencies
 5. `pipenv shell` to set up virtualenv and environment variables automatically
 6. `python manage.py migrate` to create DB tables
 7. `python manage.py runserver` to start the development server, which can be accessed on `localhost:8000`

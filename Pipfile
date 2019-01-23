@@ -13,6 +13,7 @@ pylint-django = "*"
 [packages]
 django = "*"
 django-environ = "*"
+"psycopg2" = "*"
 
 [requires]
 python_version = "3.6"
