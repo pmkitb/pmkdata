@@ -4,13 +4,15 @@ verify_ssl = true
 name = "pypi"
 
 [dev-packages]
+"pep8" = "*"
 pylint = "*"
 "flake8" = "*"
-"pep8" = "*"
+"autopep8" = "*"
+pylint-django = "*"
 
 [packages]
 django = "*"
 django-environ = "*"
 
 [requires]
-python_version = "3.5"
+python_version = "3.6"
