@@ -1,0 +1,51 @@
+---
+
+# Install prerequisite packages
+
+- name: Install Pip
+  become: yes
+  apt:
+    name:
+      - "{{ python_name }}-pip"
+      - "{{ python_name }}-dev" # psycopg2 prerequisite
+      - libpq-dev # psycopg2 prerequisite
+    update_cache: yes
+    cache_valid_time: 3600
+  tags:
+    - packages
+
+- name: Install Pipenv
+  become: yes
+  pip:
+    name: pipenv
+
+# Prepare directories
+
+- name: Create app directory and set permissions
+  become: yes
+  file:
+    state: directory
+    path: "{{ app_directory }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    mode: 0755
+
+- name: Create app static directory and set permissions
+  become: yes
+  file:
+    state: directory
+    path: "{{ static_directory }}"
+    owner: "{{ app_user }}"
+    group: www-data
+    mode: 0755
+
+- name: Create app media directory and set permissions
+  become: yes
+  file:
+    state: directory
+    path: "{{ media_directory }}"
+    owner: "{{ app_user }}"
+    group: www-data
+    mode: 0755
+
+- import_tasks: deploy.yml

@@ -1,0 +1,99 @@
+---
+
+# Update package cache and install common packages
+
+- name: Update all packages
+  become: yes
+  apt:
+    update_cache: yes
+    upgrade: safe
+    autoremove: yes
+  tags:
+    - packages
+
+- name: Install common prerequisites
+  become: yes
+  apt:
+    name:
+      - software-properties-common
+      - build-essential
+      - libssl-dev
+      - libffi-dev
+      - openssl
+      - curl
+      - git
+    update_cache: yes
+    cache_valid_time: 3600
+  tags:
+    - packages
+
+# Set up SSH
+
+- name: Ensure openssh-server is installed
+  become: yes
+  apt:
+    pkg: openssh-server
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600
+  notify: Restart SSH
+  tags:
+    - packages
+
+- name: Disable root login
+  become: yes
+  when: ssh_disable_root_login
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: '^PermitRootLogin'
+    line: "PermitRootLogin no"
+    state: present
+  notify: Restart SSH
+
+- name: Disable password authentication
+  become: yes
+  when: ssh_disable_password_auth
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: '^PasswordAuthentication'
+    line: "PasswordAuthentication no"
+    state: present
+  notify: Restart SSH
+
+# Set up firewall
+
+- name: Allow SSH traffic
+  become: yes
+  ufw:
+    rule: allow
+    name: OpenSSH
+
+- name: Enable firewall
+  become: yes
+  ufw:
+    state: enabled
+    policy: deny
+
+# Set timezone
+
+- name: Set /etc/timezone # Not needed on newer Ubuntu systems, set /etc/localtime symlink instead
+  become: yes
+  copy:
+    content: "{{ timezone | regex_replace('$', '\n') }}"
+    dest: /etc/timezone
+    owner: root
+    group: root
+    mode: 0644
+    backup: yes
+  notify: Update timezone
+
+- name: Set /etc/localtime
+  become: yes
+  file:
+    src: /usr/share/zoneinfo/{{ timezone }}
+    dest: /etc/localtime
+    state: link
+    owner: root
+    group: root
+    mode: 0644
+  notify: Update timezone

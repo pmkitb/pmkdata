@@ -1,0 +1,42 @@
+---
+
+# common
+
+python_name: python3
+
+ssh_disable_root_login: yes
+ssh_disable_password_auth: yes
+
+app_user: pmkdata
+app_user_password: "{{ vault_app_user_password }}"
+
+timezone: Asia/Jakarta
+
+# postgresql
+
+db_name: pmkdata
+db_user: pmkdata
+db_password: "{{ vault_db_password }}"
+
+# pmkdata
+
+app_repository: https://github.com/pmkitb/pmkdata.git
+
+app_directory: /opt/pmkdata
+data_directory: /opt/pmkdata_data
+static_directory: "{{ data_directory }}/static"
+media_directory: "{{ data_directory }}/media"
+app_debug: no
+app_secret_key: "{{ vault_app_secret_key }}"
+
+app_socket: /run/pmkdata.sock
+app_workers: 3
+
+# nginx
+
+fqdn: data.pmk.itb.ac.id
+
+use_certbot: yes
+certbot_auto_renew: yes
+certbot_service_admin_email: pmk.itb@gmail.com
+certbot_webroot_directory: /var/lib/letsencrypt

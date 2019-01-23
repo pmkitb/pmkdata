@@ -1,0 +1,33 @@
+---
+
+- hosts: servers
+  remote_user: root
+  vars_files:
+    - vars/main.yml
+    - vars/vault.yml
+  tasks:
+    - name: Create non-root sudo user for application
+      user:
+        name: "{{ app_user }}"
+        state: present
+        password: "{{ app_user_password }}"
+        shell: /bin/bash
+        groups:
+          - sudo
+
+    - name: Create .ssh folder for the new application user
+      file:
+        path: ~{{ app_user }}/.ssh
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+        mode: 0700
+
+    - name: Copy authorized keys from the current user to the new application user
+      copy:
+        src: ~{{ ansible_user }}/.ssh/authorized_keys
+        dest: ~{{ app_user }}/.ssh/authorized_keys
+        remote_src: yes
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+        mode: 0700

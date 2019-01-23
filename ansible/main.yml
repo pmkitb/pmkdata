@@ -1,0 +1,12 @@
+---
+
+- hosts: servers
+  remote_user: "{{ app_user }}"
+  vars_files:
+    - vars/main.yml
+    - vars/vault.yml
+  roles:
+    - common
+    - postgresql
+    - pmkdata
+    - nginx

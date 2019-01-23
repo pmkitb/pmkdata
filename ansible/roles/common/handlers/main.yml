@@ -1,0 +1,11 @@
+---
+
+- name: Update timezone
+  become: yes
+  command: dpkg-reconfigure --frontend noninteractive tzdata
+
+- name: Restart SSH
+  become: yes
+  systemd:
+    state: restarted
+    name: ssh

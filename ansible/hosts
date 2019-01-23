@@ -1,0 +1,6 @@
+[servers]
+data.pmk.itb.ac.id
+
+[servers:vars]
+ansible_python_interpreter=/usr/bin/{{ python_name }}
+ansible_become_password='{{ app_user_password }}'
