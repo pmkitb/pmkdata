@@ -15,6 +15,7 @@ django = "*"
 django-environ = "*"
 "psycopg2" = "*"
 gunicorn = "*"
+django-import-export = "*"
 
 [requires]
 python_version = "3.6"
