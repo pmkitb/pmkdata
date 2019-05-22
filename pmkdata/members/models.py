@@ -53,8 +53,9 @@ class Member(models.Model):
     origin_province = models.CharField('provinsi asal', max_length=255, blank=True)
     origin_address = models.CharField('kota/daerah asal', max_length=1023, blank=True)
     origin_school = models.CharField('sekolah asal', max_length=255, blank=True)
-    status = models.CharField('status mahasiswa', max_length=31, choices=constants.MEMBER_STATUS_CHOICES,
-                              default=constants.MEMBER_ACTIVE)
+    current_church = models.CharField('gereja di Bandung', max_length=255, blank=True)
+    origin_church = models.CharField('gereja asal', max_length=255, blank=True)
+    status = models.CharField('status mahasiswa', max_length=31, choices=constants.MEMBER_STATUS_CHOICES, blank=True)
     notes = models.TextField(blank=True)
 
     def __str__(self):
