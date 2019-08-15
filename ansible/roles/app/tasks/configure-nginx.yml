@@ -1,0 +1,30 @@
+---
+
+# Disable the default Nginx site config, then add our site's config
+
+- name: Disable default Nginx site config
+  become: yes
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: Reload Nginx
+
+- name: Add Nginx app configuration
+  become: yes
+  template:
+    src: "{{ use_letsencrypt | ternary('nginx_https.j2', 'nginx_http.j2') }}"
+    dest: /etc/nginx/sites-available/{{ app_name }}
+    owner: www-data
+    group: www-data
+    mode: 0644
+  notify: Reload Nginx
+
+- name: Enable Nginx app configuration
+  become: yes
+  file:
+    src: /etc/nginx/sites-available/{{ app_name }}
+    dest: /etc/nginx/sites-enabled/{{ app_name }}
+    owner: www-data
+    group: www-data
+    state: link
+  notify: Reload Nginx

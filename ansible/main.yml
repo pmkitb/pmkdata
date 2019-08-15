@@ -7,6 +7,4 @@
     - vars/vault.yml
   roles:
     - common
-    - postgresql
-    - pmkdata
-    - nginx
+    - app

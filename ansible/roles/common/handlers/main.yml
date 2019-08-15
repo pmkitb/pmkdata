@@ -8,4 +8,4 @@
   become: yes
   systemd:
     state: restarted
-    name: ssh
+    name: sshd

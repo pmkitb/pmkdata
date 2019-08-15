@@ -1,0 +1,9 @@
+DEBUG={{ app_debug | ternary('true', 'false') }}
+SECRET_KEY={{ app_secret_key }}
+ALLOWED_HOSTS={{ fqdn | default(ansible_default_ipv4.address) }}
+DATABASE_URL=postgres://{{ db_user }}:{{ db_password }}@localhost:5432/{{ db_name }}
+STATIC_URL=/assets/
+STATIC_ROOT={{ app_static_directory }}
+MEDIA_URL=/media/
+MEDIA_ROOT={{ app_media_directory }}
+TIME_ZONE={{ timezone }}

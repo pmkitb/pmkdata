@@ -9,37 +9,13 @@
   tags:
     - packages
 
-- name: Allow Nginx traffic
+- name: Allow Nginx traffic through firewall
   become: yes
   ufw:
     rule: allow
     name: Nginx Full
+  tags:
+    - firewall
 
-- name: Disable default Nginx site config
-  become: yes
-  file:
-    path: /etc/nginx/sites-enabled/default
-    state: absent
-  notify: Reload Nginx
-
-- name: Add Nginx HTTP configuration
-  become: yes
-  template:
-    src: pmkdata_http.j2
-    dest: /etc/nginx/sites-available/pmkdata
-    owner: www-data
-    group: www-data
-    mode: 0644
-
-- name: Enable Nginx configuration
-  become: yes
-  file:
-    src: /etc/nginx/sites-available/pmkdata
-    dest: /etc/nginx/sites-enabled/pmkdata
-    owner: www-data
-    group: www-data
-    state: link
-  notify: Reload Nginx
-
-- import_tasks: configure-certbot.yml
-  when: use_certbot
+- import_tasks: configure-letsencrypt.yml
+  when: use_letsencrypt

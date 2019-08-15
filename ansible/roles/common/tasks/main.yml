@@ -11,22 +11,6 @@
   tags:
     - packages
 
-- name: Install common prerequisites
-  become: yes
-  apt:
-    name:
-      - software-properties-common
-      - build-essential
-      - libssl-dev
-      - libffi-dev
-      - openssl
-      - curl
-      - git
-    update_cache: yes
-    cache_valid_time: 3600
-  tags:
-    - packages
-
 # Set up SSH
 
 - name: Ensure openssh-server is installed
@@ -60,20 +44,6 @@
     state: present
   notify: Restart SSH
 
-# Set up firewall
-
-- name: Allow SSH traffic
-  become: yes
-  ufw:
-    rule: allow
-    name: OpenSSH
-
-- name: Enable firewall
-  become: yes
-  ufw:
-    state: enabled
-    policy: deny
-
 # Set timezone
 
 - name: Set /etc/timezone # Not needed on newer Ubuntu systems, set /etc/localtime symlink instead
@@ -97,3 +67,52 @@
     group: root
     mode: 0644
   notify: Update timezone
+
+# Set up temporary swap file that persists until next reboot
+
+- name: Create swap file
+  become: yes
+  command: fallocate -l {{ swap_size }} /swapfile
+  when: create_swap
+  args:
+    creates: /swapfile
+  tags:
+    - swap
+
+- name: Set swap file permissions
+  become: yes
+  file:
+    dest: /swapfile
+    mode: 0600
+  when: create_swap
+  tags:
+    - swap
+
+- name: Disable swap if enabled
+  become: yes
+  command: swapoff /swapfile
+  when: create_swap
+  ignore_errors: yes
+  tags:
+    - swap
+
+- name: Set swappiness
+  become: yes
+  command: sysctl vm.swappiness={{ swappiness }}
+  when: create_swap
+  tags:
+    - swap
+
+- name: Format swap file
+  become: yes
+  command: mkswap /swapfile
+  when: create_swap
+  tags:
+    - swap
+
+- name: Activate swap until next reboot
+  become: yes
+  command: swapon /swapfile
+  when: create_swap
+  tags:
+    - swap

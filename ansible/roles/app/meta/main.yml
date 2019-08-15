@@ -1,0 +1,6 @@
+---
+dependencies:
+  - role: postgresql
+  - role: pipenv
+  - role: nginx
+  - role: git

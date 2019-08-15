@@ -1,0 +1,23 @@
+    server_name {{ fqdn | default('_') }};
+
+    # Don't log favicon requests
+    location = /favicon.ico { access_log off; log_not_found off; }
+
+    # Serve Django static files
+    location /assets/ {
+        alias {{ app_static_directory }}/;
+        autoindex off;
+    }
+
+    # Serve Django media files
+    location /media/ {
+        alias {{ app_media_directory }}/;
+        autoindex off;
+    }
+
+    # Proxy paths to Django
+    location / {
+        client_max_body_size 20M;
+        include proxy_params;
+        proxy_pass http://unix:{{ app_socket }};
+    }

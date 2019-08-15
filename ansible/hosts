@@ -1,5 +1,5 @@
 [servers]
-data.pmk.itb.ac.id
+data.pmk.itb.ac.id fqdn=data.pmk.itb.ac.id
 
 [servers:vars]
 ansible_python_interpreter=/usr/bin/{{ python_name }}

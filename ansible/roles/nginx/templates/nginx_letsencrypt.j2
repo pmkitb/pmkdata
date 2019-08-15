@@ -1,0 +1,16 @@
+server {
+    server_name {{ fqdn }};
+    listen 80;
+
+    # Serve Let's Encrypt domain validation challenge
+    location /.well-known/acme-challenge/ {
+        allow all;
+        root {{ letsencrypt_webroot_directory }}/;
+        default_type "text/plain";
+        try_files $uri =404;
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}

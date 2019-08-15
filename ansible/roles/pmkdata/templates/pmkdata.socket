@@ -1,8 +1,0 @@
-[Unit]
-Description=Gunicorn socket for pmkdata
-
-[Socket]
-ListenStream=/run/pmkdata.sock
-
-[Install]
-WantedBy=sockets.target

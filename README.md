@@ -21,14 +21,16 @@ Prerequisites: Python and Pipenv installed
 - Ansible installed on your local machine
 - A Ubuntu 18.04 server or equivalent (DigitalOcean droplet recommended). Ensure you can SSH to the `root` user on your server using public key authentication.
 
+WARNING: the Ansible playbook will disable SSH password logins by default. If you use password login for SSH, set the `ssh_disable_password_auth` variable to false in `ansible/vars/main.yml`.
+
 ### Steps
 
 1. `cd <repo_directory>/ansible`
 2. Edit variables `vars/main.yml` as needed
-3. `ansible-vault edit vars/vault.yml --ask-vault-pass`, then enter the vault password. Edit variables as needed, then save and quit the editor
+3. `ansible-vault edit vars/vault.yml --ask-vault-pass`, then enter the vault password. Set the repository deploy key (e.g. Github deploy private key) if necessary; comment it otherwise. Edit other variables as needed, then save and quit the editor
 4. Edit `hosts` file - enter your server hostname
 5. `ansible-playbook create-sudo-user.yml -i hosts --ask-vault-pass` to create `pmkdata` user (vault password required)
-6. `ansible-playbook main.yml -i hosts --ask-vault-pass` to set up and deploy `pmkdata` (vault password required). Note: this step will also disable root SSH login for security reasons. From now on, you can using the `pmkdata` application user
+6. `ansible-playbook main.yml -i hosts --ask-vault-pass` to set up and deploy app (vault password required). Note: this step will also disable root SSH login for security reasons. From now on, you can use the `pmkdata` application user
 
 ### Creating the Django superuser
 
@@ -36,3 +38,10 @@ Prerequisites: Python and Pipenv installed
 2. On the server, `cd /opt/pmkdata`
 3. `pipenv shell`
 4. `python manage.py createsuperuser`
+
+### Notes
+
+- To deploy on a provisioned system, use `ansible-playbook main.yml -i hosts -t deploy --ask-vault-pass`. WARNING: this will also run the DB migration
+- The system Python will be used by default (requires Python 3)
+- It is assumed that Gunicorn is installed as a Pipenv app dependency
+- Firewall (UFW) is set to only allow SSH and Nginx HTTP and HTTPS

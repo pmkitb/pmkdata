@@ -89,9 +89,11 @@ env = environ.Env(
     DEBUG=(bool, False),
     SECRET_KEY=(str, 'z4z#u2gmm(+3^!$7b^kc3ijq8p3o&&hekk#^7erdo5)!3e*rp9'),
     ALLOWED_HOSTS=(list, []),
-    STATIC_ROOT=(environ.Path, os.path.join(BASE_DIR, 'data/static')),
-    MEDIA_ROOT=(environ.Path, os.path.join(BASE_DIR, 'data/media')),
     TIME_ZONE=(str, 'UTC'),
+    STATIC_URL=(str, '/static/'),
+    STATIC_ROOT=(environ.Path, os.path.join(BASE_DIR, 'data/static')),
+    MEDIA_URL=(str, '/media/'),
+    MEDIA_ROOT=(environ.Path, os.path.join(BASE_DIR, 'data/media')),
     # DATABASE_URL
 )
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
@@ -123,10 +125,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = env('STATIC_URL')
 STATIC_ROOT = env('STATIC_ROOT')
 
 # Uploaded files
 
-MEDIA_URL = '/media/'
+MEDIA_URL = env('MEDIA_URL')
 MEDIA_ROOT = env('MEDIA_ROOT')

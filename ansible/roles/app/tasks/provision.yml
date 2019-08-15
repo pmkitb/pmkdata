@@ -2,11 +2,10 @@
 
 # Install prerequisite packages
 
-- name: Install Pip
+- name: Install prerequisite packages
   become: yes
   apt:
     name:
-      - "{{ python_name }}-pip"
       - "{{ python_name }}-dev" # psycopg2 prerequisite
       - libpq-dev # psycopg2 prerequisite
     update_cache: yes
@@ -14,12 +13,7 @@
   tags:
     - packages
 
-- name: Install Pipenv
-  become: yes
-  pip:
-    name: pipenv
-
-# Prepare directories
+# Prepare app directories
 
 - name: Create app directory and set permissions
   become: yes
@@ -34,7 +28,7 @@
   become: yes
   file:
     state: directory
-    path: "{{ static_directory }}"
+    path: "{{ app_static_directory }}"
     owner: "{{ app_user }}"
     group: www-data
     mode: 0755
@@ -43,9 +37,10 @@
   become: yes
   file:
     state: directory
-    path: "{{ media_directory }}"
+    path: "{{ app_media_directory }}"
     owner: "{{ app_user }}"
     group: www-data
     mode: 0755
 
-- import_tasks: deploy.yml
+- import_tasks: create-db.yml
+- import_tasks: configure-nginx.yml

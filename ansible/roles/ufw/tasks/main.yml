@@ -1,0 +1,31 @@
+---
+
+# Set up UFW firewall
+
+- name: Install UFW firewall
+  become: yes
+  apt:
+    name:
+      - ufw
+    update_cache: yes
+    cache_valid_time: 3600
+  tags:
+    - packages
+    - firewall
+
+- name: Allow SSH traffic through firewall
+  become: yes
+  ufw:
+    rule: allow
+    name: OpenSSH
+  tags:
+    - firewall
+
+- name: Enable firewall
+  become: yes
+  ufw:
+    state: enabled
+    direction: incoming
+    policy: deny
+  tags:
+    - firewall

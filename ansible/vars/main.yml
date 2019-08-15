@@ -12,31 +12,37 @@ app_user_password: "{{ vault_app_user_password }}"
 
 timezone: Asia/Jakarta
 
+create_swap: yes # Needed to prevent out-of-memory errors in machines with small memory
+swap_size: 2G
+swappiness: 10
+
 # postgresql
 
 db_name: pmkdata
 db_user: pmkdata
 db_password: "{{ vault_db_password }}"
 
-# pmkdata
+# app
 
-app_repository: https://github.com/pmkitb/pmkdata.git
+app_name: pmkdata
+app_repository: git@github.com:pmkitb/pmkdata.git
+app_repository_deploy_key: "{{ vault_app_repository_deploy_key }}"
 
-app_directory: /opt/pmkdata
-data_directory: /opt/pmkdata_data
-static_directory: "{{ data_directory }}/static"
-media_directory: "{{ data_directory }}/media"
+app_directory: /opt/{{ app_name }}
+app_data_directory: /opt/{{ app_name }}_data
+app_static_directory: "{{ app_data_directory }}/static"
+app_media_directory: "{{ app_data_directory }}/media"
+
 app_debug: no
 app_secret_key: "{{ vault_app_secret_key }}"
 
-app_socket: /run/pmkdata.sock
+app_wsgi_module: "{{ app_name }}.wsgi:application"
+app_socket: /run/{{ app_name }}.sock
 app_workers: 3
 
 # nginx
 
-fqdn: data.pmk.itb.ac.id
-
-use_certbot: yes
-certbot_auto_renew: yes
-certbot_service_admin_email: pmk.itb@gmail.com
-certbot_webroot_directory: /var/lib/letsencrypt
+use_letsencrypt: "{{ fqdn is defined }}" # fqdn is defined in the inventory file
+letsencrypt_auto_renew: yes
+letsencrypt_service_admin_email: jonathan.christopher@outlook.com
+letsencrypt_webroot_directory: /var/lib/letsencrypt

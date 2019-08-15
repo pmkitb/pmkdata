@@ -1,6 +1,6 @@
 [Unit]
-Description=Gunicorn service for pmkdata
-Requires=pmkdata.socket
+Description=Gunicorn service for {{ app_name }}
+Requires={{ app_name }}.socket
 After=network.target
 
 [Service]
@@ -11,7 +11,7 @@ ExecStart={{ app_directory }}/.venv/bin/gunicorn \
           --access-logfile - \
           --workers {{ app_workers }} \
           --bind unix:{{ app_socket }} \
-          pmkdata.wsgi:application
+          {{ app_wsgi_module }}
 
 [Install]
 WantedBy=multi-user.target

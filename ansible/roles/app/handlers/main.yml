@@ -1,8 +1,8 @@
 ---
 
-- name: Restart pmkdata Gunicorn
+- name: Restart app Gunicorn
   become: yes
   systemd:
     state: restarted
     daemon_reload: yes
-    name: pmkdata
+    name: "{{ app_name }}"

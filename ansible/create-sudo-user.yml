@@ -10,7 +10,7 @@
       user:
         name: "{{ app_user }}"
         state: present
-        password: "{{ app_user_password }}"
+        password: "{{ app_user_password | password_hash('sha512', 'j3mrH2iPQnJ8ay') }}"
         shell: /bin/bash
         groups:
           - sudo
